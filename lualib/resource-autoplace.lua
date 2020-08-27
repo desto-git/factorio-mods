@@ -361,17 +361,25 @@ local function resource_autoplace_settings(params)
   local regular_patches = regular_spots + blobs1f * regular_blob_amplitude_expression
   local starting_patches = starting_spots + blobs0f * starting_blob_amplitude
 
+  local patchMultiplier = settings.startup["resource-richness-distance-multiplier-regular-patch-multiplier"].value
+  local distanceMultiplier = settings.startup["resource-richness-distance-multiplier-distance-multiplier"].value
+  local regular_patches_richness = regular_patches * patchMultiplier + distance * distanceMultiplier
+
   local all_patches
+  local all_patches_richness
   if params.has_starting_area_placement == true then
     all_patches = noise.max(starting_patches, regular_patches)
+    all_patches_richness = noise.max(starting_patches, regular_patches_richness)
   elseif params.has_starting_area_placement == false then
     all_patches = regular_patches
+    all_patches_richness = regular_patches_richness
   else -- nil or unspecified means just make it uniform everywhere
     all_patches = regular_patches
+    all_patches_richness = regular_patches_richness
   end
 
-  local richness_expression = noise.delimit_procedure(all_patches) -- Re-use all that stuff between richness/probability!
-  local probability_expression = noise.clamp(richness_expression, 0, 1)
+  local richness_expression = all_patches_richness
+  local probability_expression = noise.clamp(all_patches, 0, 1)
   if random_probability < 1 then
     richness_expression = richness_expression / random_probability
     probability_expression = probability_expression * tne{
