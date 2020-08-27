@@ -1,4 +1,4 @@
-# Spore Capsule
+# Sapling Capsule
 
 Works like a cluster grenade, but plants trees instead of pulverizing them.
 
