@@ -65,8 +65,6 @@ end
 
 
 function get_free_pipe_connection (entity, best_position, prev_pipe_connections)
-  local prev_pipe_connections = prev_pipe_connections or {}
-
   local cb = entity.collision_box
   local min_x = math.floor (cb[1][1]*2)/2 -- -0.4 --> -0.5; -1.4 --> -1.5; -1.2 --> -1.5
   local min_y = math.floor (cb[1][2]*2)/2
@@ -166,13 +164,28 @@ function get_free_pipe_connection (entity, best_position, prev_pipe_connections)
   return nil
 end
 
+--- add a pipe connection to the list of connections to be added to the entity
+-- @param into_table - table to add the pipe into
+-- @param entity - the entity to add pipe connections to
+-- @param best_position - the preferred position for a new pipe connection
+-- @param prev_connections - a table of pipe connections previously added with this function
+function insert_pipe_connection (into_table, entity, position, prev_connections)
+  local pipe_connection_position = get_free_pipe_connection (entity, position, prev_connections)
+  if pipe_connection_position then
+    local new_connection = {position = pipe_connection_position}
+    table.insert (into_table, new_connection)
+    table.insert (prev_connections, new_connection.position)
+  end
+end
 
-for i, type_name in pairs ({
-    'furnace' ,
-    'assembling-machine',
-    'mining-drill',
-    'lab'
-    }) do
+local entity_types_to_alter = {
+  'furnace' ,
+  'assembling-machine',
+  'mining-drill',
+  'lab'
+}
+
+for i, type_name in pairs (entity_types_to_alter) do
   local prot_type = data.raw[type_name]
   for name, prot in pairs (prot_type) do
 
@@ -190,20 +203,17 @@ for i, type_name in pairs ({
         x = math.floor (x*2)/2 - 0.5
         y = math.floor (y*2)/2 - 0.5
 
-        local position   = {x= x, y=y+2}
-        local position_2 = {x=-x, y=y+2}
-
-        local pipe_connections = {{position = get_free_pipe_connection (prot, position, nil)}}
-
+        local pipe_connections = {}
         local new_connections = {}
-        for i, v in pairs (pipe_connections) do
-          table.insert (new_connections, v.position)
-        end
 
-        local second_pipe_connection_position = get_free_pipe_connection (prot, position_2, new_connections)
+        -- left and right
+        insert_pipe_connection (pipe_connections, prot, {x= x, y=y+2}, new_connections)
+        insert_pipe_connection (pipe_connections, prot, {x=-x, y=y+2}, new_connections)
 
-        if second_pipe_connection_position then
-          table.insert (pipe_connections, {position = second_pipe_connection_position})
+        if type_name == "lab" then
+          -- top and bottom
+          insert_pipe_connection (pipe_connections, prot, {x=x+2, y= y}, new_connections)
+          insert_pipe_connection (pipe_connections, prot, {x=x+2, y=-y}, new_connections)
         end
 
 		local str = prot.energy_usage
