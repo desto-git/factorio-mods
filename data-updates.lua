@@ -1,24 +1,4 @@
--- electric furnace must better as the steel one
-data.raw.furnace["steel-furnace"].crafting_speed = data.raw.furnace["stone-furnace"].crafting_speed * 2
-data.raw.furnace["electric-furnace"].crafting_speed = data.raw.furnace["steel-furnace"].crafting_speed * 2
-
-
--- you are need a lot of steam, really lot
-data.raw.fluid.steam.heat_capacity = "2KJ"
-data.raw.boiler.boiler.energy_source.effectivity = 10
-data.raw.boiler.boiler.energy_consumption = "18MW"
-data.raw.boiler["heat-exchanger"].energy_source.effectivity = 10
-data.raw.boiler["heat-exchanger"].energy_consumption = "100MW"
-data.raw.boiler["heat-exchanger"].target_temperature = 515
-
--- some rounding
-data.raw.fluid.steam.max_temperature = 1015
-
-data.raw.recipe.pump.ingredients = {{'iron-plate', 10}, {'pipe', 2}}
-
 local blacklist = {'factory-port-marker', 'hidden_trade_post', 'castle_dummy', 'castle'}
-
-
 
 function is_value_in_list (value, list)
   for i, v in pairs (list) do
@@ -216,57 +196,25 @@ for i, type_name in pairs (entity_types_to_alter) do
           insert_pipe_connection (pipe_connections, prot, {x=x+2, y=-y}, new_connections)
         end
 
-		local str = prot.energy_usage
-		local fupt = (0.24)/60
-		if str then
-			local value = tonumber(string.match(str, "%d[%d.,]*"))
-			local unit = string.match(str, "%a+")
-
-			if unit == "kW" then
-				fupt = fupt * value /75
-			elseif unit == "MW" then
-				fupt = fupt * (value*1000) /75
-			elseif unit then
-				log ('error: unknown unit: "' .. unit .. '" by ["' .. prot.name .. '"]' )
-			else
-				log ('error: no unit by ["' .. prot.name .. '"]' )
-			end
-		else
-			log ('error: no power: "' .. unit .. '" by ["' .. prot.name .. '"]' )
-		end
-
         prot.energy_source =
+        {
+          type = 'fluid',
+          maximum_temperature = 165,
+
+          fluid_box =
           {
-            type = 'fluid',
-            scale_fluid_usage = true,
-
-
---			fluid_usage_per_tick = 1.3/60, -- added in 0.3.0
---			fluid_usage_per_tick = 1/60, -- added in 0.3.0
---			1/60 is too small, with am-3 and 3 speed modules we can make 800 items/m with 500 degrees steam; 1/60 makes just 600 items/m
-
-			-- AM-1: energy_usage = "75kW"
---			fluid_usage_per_tick = (0.25)/60, -- added in 0.3.0 -- 500 degrees 75 kW
---			fluid_usage_per_tick = (0.23)/60, -- added in 0.3.0 -- 170 degrees 75 kW
---			fluid_usage_per_tick = (0.24)/60, -- added in 0.3.0 -- 165 degrees 75 kW
-            fluid_usage_per_tick = fupt, -- added in 0.3.0
-
-			--	maximum_temperature = 1015, -- https://wiki.factorio.com/Types/EnergySource#maximum_temperature
-			-- not useful
-
-            fluid_box =
-              {
-                production_type = "input-output",
-                filter = "steam",
-                pipe_picture = table.deepcopy (data.raw["mining-drill"]["electric-mining-drill"].input_fluid_box.pipe_picture),
-                pipe_covers = table.deepcopy (data.raw["mining-drill"]["electric-mining-drill"].input_fluid_box.pipe_covers),
-                base_area = 1,
-                height = 2,
-                base_level = -1,
-                pipe_connections = pipe_connections
-              }
-
+            production_type = "input-output",
+            filter = "steam",
+            pipe_picture = table.deepcopy (data.raw["mining-drill"]["electric-mining-drill"].input_fluid_box.pipe_picture),
+            pipe_covers = table.deepcopy (data.raw["mining-drill"]["electric-mining-drill"].input_fluid_box.pipe_covers),
+            base_area = 1,
+            height = 2,
+            base_level = -1,
+            pipe_connections = pipe_connections
           }
+        }
+
+        -- allow rotating assembling machines, even if the recipe has no fluid
         if prot.fluid_boxes and prot.fluid_boxes.off_when_no_fluid_recipe then
           prot.fluid_boxes.off_when_no_fluid_recipe = false
         end
@@ -274,6 +222,3 @@ for i, type_name in pairs (entity_types_to_alter) do
     end
   end
 end
-
-
-

@@ -3,6 +3,8 @@ Version: 0.4.0
 Date: 2020-08-29
   Features:
     - Labs have steam connections on each side (because they cannot be rotated)
+  Balancing:
+    - Use the same amount of steam as would be needed to generate the electricity
   Bugfixes:
     - Show steam connections in ALT mode
     - Remove debug logs
