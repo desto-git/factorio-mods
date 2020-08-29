@@ -196,17 +196,21 @@ for i, type_name in pairs (entity_types_to_alter) do
           insert_pipe_connection (pipe_connections, prot, {x=x+2, y=-y}, new_connections)
         end
 
+        local images = data.raw["mining-drill"]["electric-mining-drill"].input_fluid_box
+        local emissions_per_minute = prot.energy_source.emissions_per_minute
+
         prot.energy_source =
         {
           type = 'fluid',
           maximum_temperature = 165,
+          emissions_per_minute = emissions_per_minute,
 
           fluid_box =
           {
             production_type = "input-output",
             filter = "steam",
-            pipe_picture = table.deepcopy (data.raw["mining-drill"]["electric-mining-drill"].input_fluid_box.pipe_picture),
-            pipe_covers = table.deepcopy (data.raw["mining-drill"]["electric-mining-drill"].input_fluid_box.pipe_covers),
+            pipe_picture = images.pipe_picture,
+            pipe_covers = images.pipe_covers,
             base_area = 1,
             height = 2,
             base_level = -1,
