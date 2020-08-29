@@ -1,13 +1,3 @@
-local only_for_electric_energy = true
-
-log (' ==============================================')
-log (' ==============================================')
-log (' ==============================================')
-log (' ================ < HI DEVS > ================')
-log (' =============================================')
-log (' =============================================')
-log ('==============================================')
-
 -- electric furnace must better as the steel one
 data.raw.furnace["steel-furnace"].crafting_speed = data.raw.furnace["stone-furnace"].crafting_speed * 2
 data.raw.furnace["electric-furnace"].crafting_speed = data.raw.furnace["steel-furnace"].crafting_speed * 2
@@ -42,49 +32,28 @@ function is_pipe_connection_collides (entity, position, prev_pipe_connections)
   local prev_pipe_connections = prev_pipe_connections or {}
   local all_pipe_connections = prev_pipe_connections -- pipe_connections
 
-
-  -- entity.energy_source.fluid_box.pipe_connections[1].position = {x = -4, y= -1}
   local positions = entity.energy_source and entity.energy_source.fluid_box and entity.energy_source.fluid_box.pipe_connections or {}
-  if #positions > 0 then
-    log ('positions: ' .. serpent.line (positions))
-  elseif entity.energy_source and entity.energy_source.fluid_box then
-    log ('entity.energy_source.fluid_box: ' .. serpent.line (entity.energy_source.fluid_box))
-  elseif entity.energy_source then
-    log ('entity.energy_source: ' .. serpent.line (entity.energy_source))
-  end
-
 
   for i, pos in pairs (positions) do
     local x = pos.x or pos[1]
     local y = pos.y or pos[2]
-    log (' added 1')
     table.insert (all_pipe_connections, {x=x, y=y})
   end
 
-  -- entity.fluid_boxes[1].pipe_connections[1] = {type = "input", position = {0, -2}}
   local fluid_boxes = entity.fluid_boxes or {}
-  if #fluid_boxes > 0 then
-    -- log ('fluid_boxes: ' .. serpent.line (fluid_boxes))
-  end
 
   for i, fluid_box in pairs (fluid_boxes) do
     if type (fluid_box) == 'table' then -- somehow it was boolean
       local pipe_connections = fluid_box.pipe_connections or {}
-      if #pipe_connections > 0 then
-        log ('pipe_connections: ' .. serpent.line (pipe_connections))
-      end
 
       for j, pipe_connection in pairs (pipe_connections) do
         local pos = pipe_connection.position
         local x = pos.x or pos[1]
         local y = pos.y or pos[2]
-        log (' added 2')
         table.insert (all_pipe_connections, {x=x, y=y})
       end
     end
   end
-
-  log (' ["'..entity.name..'"] amount pipes: ' .. #all_pipe_connections)
 
   for i, pipe_connection in pairs (all_pipe_connections) do
     if pipe_connection.x == position.x and pipe_connection.y == position.y then
@@ -95,18 +64,15 @@ function is_pipe_connection_collides (entity, position, prev_pipe_connections)
 end
 
 
-function get_free_pipe_connection (entity, best_position, prev_pipe_connections, comment)
+function get_free_pipe_connection (entity, best_position, prev_pipe_connections)
   local prev_pipe_connections = prev_pipe_connections or {}
 
   local cb = entity.collision_box
-  local min_x = math.floor (cb[1][1]*2)/2 -- -0.4 --> -0.5; -1.4 --> -1.5;
+  local min_x = math.floor (cb[1][1]*2)/2 -- -0.4 --> -0.5; -1.4 --> -1.5; -1.2 --> -1.5
   local min_y = math.floor (cb[1][2]*2)/2
 
   local max_x = math.ceil (cb[2][1]*2)/2
   local max_y = math.ceil (cb[2][2]*2)/2
-
-  local entity_size = (max_x-min_x) .. 'x' .. (max_y-min_y)
-  log ('["' .. entity.name .. '"] size: ' .. entity_size)
 
   local all_c_positions = {}
   local all_c_positions_list = {}
@@ -150,7 +116,6 @@ function get_free_pipe_connection (entity, best_position, prev_pipe_connections,
         for i = #all_c_positions_list, 1, -1 do -- backwards!
           local pos = all_c_positions_list[i]
           if pos.x == x and pos.y == y then
-            -- all_c_positions_list[i] = nil
             table.remove (all_c_positions_list, i)
           end
 
@@ -160,13 +125,8 @@ function get_free_pipe_connection (entity, best_position, prev_pipe_connections,
     end
   end
 
-  -- the all_c_positions hasn't any collided pipes
-  -- if best_position and and all_c_positions[best_position.x][best_position.y] then
-  if best_position and all_c_positions[best_position.x] and all_c_positions[best_position.x][best_position.y] then -- changed in 0.2.1
-    log ('["'..entity.name..'"] '.. comment ..' - best position: '..serpent.line (best_position))
+  if best_position and all_c_positions[best_position.x] and all_c_positions[best_position.x][best_position.y] then
     return best_position
-  else
-    log ('error: no best position: '..comment)
   end
 
   -- best position was already used
@@ -175,10 +135,7 @@ function get_free_pipe_connection (entity, best_position, prev_pipe_connections,
     local position = pos
     if pos.x == best_position.x or pos.y == best_position.y then
       if not (is_pipe_connection_collides (entity, position, prev_pipe_connections)) then
-
         table.insert (best_list, pos)
-      else
-        log ('not free position')
       end
     end
   end
@@ -186,17 +143,8 @@ function get_free_pipe_connection (entity, best_position, prev_pipe_connections,
 
 
   if #best_list > 0 then
-    log ('is best_list[1] not free? ' .. tostring (is_pipe_connection_collides (entity, best_list[1], prev_pipe_connections)))
-
-    local pipe_position = best_list[1]
-    -- is_pipe_connection_collides (entity, position)
-
-    log ('["'..entity.name..'"] '.. comment ..' - first from best list 1: '..serpent.line (pipe_position))
-    -- return best_list[math.random(#best_list)]
-
-
-    return pipe_position
-  else -- make best_list more flexible
+    return best_list[1]
+  else
 
     for i, pos in pairs (all_c_positions_list) do
       if pos.x == (-0.5) or pos.x == (0) or pos.x == (0.5) or pos.y == (-0.5) or pos.y == (0) or pos.y == (0.5) then
@@ -205,21 +153,16 @@ function get_free_pipe_connection (entity, best_position, prev_pipe_connections,
     end
 
     if #best_list > 0 then
-      local pipe_position = best_list[1]
-      log ('["'..entity.name..'"] '.. comment ..' - first from best list 1: '..serpent.line (pipe_position))
-      -- return best_list[math.random(#best_list)] -- no random please, added in 0.2.1
-      return pipe_position
+      return best_list[1]
     end
 
   end
 
   if #all_c_positions_list > 0 then
-    local pipe_position = best_list[1]
-    log ('["'..entity.name..'"] '.. comment ..' - first from best list 2: '..serpent.line (pipe_position))
-    -- return all_c_positions_list[math.random(#all_c_positions_list)] -- no random please, added in 0.2.1
-    return pipe_position
+    return best_list[1]
   end
-  log ('no free position by ' .. entity.name)
+
+  log ('error: no position found for entity "' .. entity.name .. '"')
   return nil
 end
 
@@ -228,18 +171,18 @@ for i, type_name in pairs ({
     'furnace' ,
     'assembling-machine',
     'mining-drill',
-    'lab' -- crash on deconstructing in 0.17.4
+    'lab'
     }) do
   local prot_type = data.raw[type_name]
   for name, prot in pairs (prot_type) do
 
-    if not only_for_electric_energy or (only_for_electric_energy and prot.energy_source and prot.energy_source.type and prot.energy_source.type == "electric") then
+    if prot.energy_source and prot.energy_source.type and prot.energy_source.type == "electric" then
 
-      if prot.energy_source
-        and prot.collision_box
+      if
+        prot.collision_box
         and not (prot.energy_source.burner_only)
         and not (is_value_in_list (name, blacklist)) -- maybe as selectable_in_game?
-        and true then
+      then
 
         local x = prot.collision_box[1][1] -- -1.4
         local y = prot.collision_box[1][2] -- -1.4
@@ -250,22 +193,18 @@ for i, type_name in pairs ({
         local position   = {x= x, y=y+2}
         local position_2 = {x=-x, y=y+2}
 
-        local pipe_connections = {{position = get_free_pipe_connection (prot, position, nil ,'pos 1')}}
-
-        -- log ('pipe_connections: ' .. serpent.line (pipe_connections))
+        local pipe_connections = {{position = get_free_pipe_connection (prot, position, nil)}}
 
         local new_connections = {}
         for i, v in pairs (pipe_connections) do
           table.insert (new_connections, v.position)
         end
 
-        local second_pipe_connection_position = get_free_pipe_connection (prot, position_2, new_connections, 'pos 2')
+        local second_pipe_connection_position = get_free_pipe_connection (prot, position_2, new_connections)
 
         if second_pipe_connection_position then
           table.insert (pipe_connections, {position = second_pipe_connection_position})
         end
-
-        -- log (name ..' position '..serpent.line (position))
 
 		local str = prot.energy_usage
 		local fupt = (0.24)/60
@@ -278,11 +217,10 @@ for i, type_name in pairs ({
 			elseif unit == "MW" then
 				fupt = fupt * (value*1000) /75
 			elseif unit then
-				log ('error: wrong unit: "' .. unit .. '" by ["' .. prot.name .. '"]' )
+				log ('error: unknown unit: "' .. unit .. '" by ["' .. prot.name .. '"]' )
 			else
 				log ('error: no unit by ["' .. prot.name .. '"]' )
 			end
-			log ('["' .. prot.name .. '"] power: "' .. str .. '" fluid_usage_per_tick: ' .. fupt)
 		else
 			log ('error: no power: "' .. unit .. '" by ["' .. prot.name .. '"]' )
 		end
@@ -290,8 +228,7 @@ for i, type_name in pairs ({
         prot.energy_source =
           {
             type = 'fluid',
---
-			scale_fluid_usage = true, -- added in 0.2.1
+            scale_fluid_usage = true,
 
 
 --			fluid_usage_per_tick = 1.3/60, -- added in 0.3.0
@@ -302,7 +239,7 @@ for i, type_name in pairs ({
 --			fluid_usage_per_tick = (0.25)/60, -- added in 0.3.0 -- 500 degrees 75 kW
 --			fluid_usage_per_tick = (0.23)/60, -- added in 0.3.0 -- 170 degrees 75 kW
 --			fluid_usage_per_tick = (0.24)/60, -- added in 0.3.0 -- 165 degrees 75 kW
-			fluid_usage_per_tick = fupt, -- added in 0.3.0
+            fluid_usage_per_tick = fupt, -- added in 0.3.0
 
 			--	maximum_temperature = 1015, -- https://wiki.factorio.com/Types/EnergySource#maximum_temperature
 			-- not useful
@@ -322,17 +259,6 @@ for i, type_name in pairs ({
           }
         if prot.fluid_boxes and prot.fluid_boxes.off_when_no_fluid_recipe then
           prot.fluid_boxes.off_when_no_fluid_recipe = false
-        end
-
-      elseif is_value_in_list (name, blacklist) then
-        log ('prototype in black list: ["'..name..'"]')
-
-
-      else
-        if prot.collision_box then
-          -- log ('collision_box '..serpent.line (prot.collision_box))
-        else
-          -- log ('no collision_box by '..name)
         end
       end
     end

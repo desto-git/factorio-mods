@@ -3,6 +3,7 @@ Version: 0.4.0
 Date: 2020-08-29
   Bugfixes:
     - Show steam connections in ALT mode
+    - Remove debug logs
   Changes:
     - Remove Mini Storage Tank
     - Don't enable some Circuit network items automatically
