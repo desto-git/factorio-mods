@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------------------------------
-Version: 0.4.0
+Version: 1.0.0
 Date: 2020-08-29
   Features:
     - Labs have steam connections on each side (because they cannot be rotated)
@@ -10,6 +10,7 @@ Date: 2020-08-29
     - Show steam connections in ALT mode
     - Remove debug logs
   Changes:
+    - Update to Factorio 1.0
     - Remove Mini Storage Tank
     - Don't enable some Circuit network items automatically
     - Add German translation
