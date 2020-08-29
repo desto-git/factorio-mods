@@ -309,7 +309,7 @@ for i, type_name in pairs ({
 
             fluid_box =
               {
-                -- production_type = "input-output",
+                production_type = "input-output",
                 filter = "steam",
                 pipe_picture = table.deepcopy (data.raw["mining-drill"]["electric-mining-drill"].input_fluid_box.pipe_picture),
                 pipe_covers = table.deepcopy (data.raw["mining-drill"]["electric-mining-drill"].input_fluid_box.pipe_covers),
