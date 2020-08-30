@@ -1,7 +1,7 @@
 {
   "name": "Steamed",
   "description": "Production line and mining drills need steam instead of electric energy.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "title": "Steamed",
   "author": "darkfrei",
   "dependencies": ["base", "? SteamCooling"],
