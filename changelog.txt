@@ -1,8 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.1
+Date: 2020-08-30
+  Bugfixes:
+    - Show only active pipe connections on assembler machines
+---------------------------------------------------------------------------------------------------
 Version: 1.0.0
 Date: 2020-08-29
   Features:
     - Labs have steam connections on each side (because they cannot be rotated)
+    - Add German translation
   Balancing:
     - Use the same amount of steam as would be needed to generate the electricity
   Bugfixes:
@@ -13,7 +19,6 @@ Date: 2020-08-29
     - Update to Factorio 1.0
     - Remove Mini Storage Tank
     - Don't enable some Circuit network items automatically
-    - Add German translation
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.0
 Date: 2020-05.04

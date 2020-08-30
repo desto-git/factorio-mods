@@ -217,11 +217,6 @@ for i, type_name in pairs (entity_types_to_alter) do
             pipe_connections = pipe_connections
           }
         }
-
-        -- allow rotating assembling machines, even if the recipe has no fluid
-        if prot.fluid_boxes and prot.fluid_boxes.off_when_no_fluid_recipe then
-          prot.fluid_boxes.off_when_no_fluid_recipe = false
-        end
       end
     end
   end
