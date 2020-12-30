@@ -1,10 +1,10 @@
 {
     "name": "sapling-capsule",
     "description": "Manually grow new trees.",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "title": "Sapling Capsule",
     "author": "desto",
     "homepage": "https://github.com/desto-git/factorio-sapling-capsule",
-    "factorio_version": "0.18",
+    "factorio_version": "1.1",
     "dependencies": ["base >= 0.18", "? alien-biomes"]
 }
