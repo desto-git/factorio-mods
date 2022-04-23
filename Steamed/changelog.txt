@@ -1,0 +1,63 @@
+---------------------------------------------------------------------------------------------------
+Version: 1.0.2
+Date: 2020-11-25
+  Changes:
+    - Update to Factorio 1.1
+---------------------------------------------------------------------------------------------------
+Version: 1.0.1
+Date: 2020-08-30
+  Bugfixes:
+    - Show only active pipe connections on assembler machines
+---------------------------------------------------------------------------------------------------
+Version: 1.0.0
+Date: 2020-08-29
+  Features:
+    - Labs have steam connections on each side (because they cannot be rotated)
+    - Add German translation
+  Balancing:
+    - Use the same amount of steam as would be needed to generate the electricity
+  Bugfixes:
+    - Let machines emit pollution
+    - Show steam connections in ALT mode
+    - Remove debug logs
+  Changes:
+    - Update to Factorio 1.0
+    - Remove Mini Storage Tank
+    - Don't enable some Circuit network items automatically
+---------------------------------------------------------------------------------------------------
+Version: 0.3.0
+Date: 2020-05.04
+  Changes:
+    - Update to 0.18
+    - Balancing
+---------------------------------------------------------------------------------------------------
+Version: 0.2.3
+Date: 2019-10-06
+  Changes:
+    - Only early electric entities now use steam. Heat and burner energy source will be not changed (for better mod compatibility).
+---------------------------------------------------------------------------------------------------
+Version: 0.2.2
+Date: 2019-10-05
+  Changes:
+    - Fixed another probably bug with automatic placement of pipe connections.
+---------------------------------------------------------------------------------------------------
+Version: 0.2.1
+Date: 2019-10-05
+  Changes:
+    - Fixed posible bug by automatic placement of pipe connections.
+---------------------------------------------------------------------------------------------------
+Version: 0.2.0
+Date: 2019-10-04
+  Changes:
+    - The mod was reworked.
+---------------------------------------------------------------------------------------------------
+Version: 0.1.1
+Date: x
+  Changes:
+    - added steam power source to labs;
+    - added exception when prototype.energy_source.burner_only is true
+---------------------------------------------------------------------------------------------------
+Version: 0.1.0
+Date: x
+  Changes:
+    - The mod was reworked; Work in Progress: now seam must be separated with mini storage tanks (included) or all steam goes out of pipe. Challange!
