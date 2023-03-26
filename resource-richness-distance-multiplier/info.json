@@ -1,10 +1,10 @@
 {
   "name": "resource-richness-distance-multiplier",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "title": "Resource Richness Distance Multiplier",
   "author": "desto",
   "homepage": "https://github.com/desto-git/factorio-rrdm",
   "description": "Adjust the richness of resource patches outside the starting area.",
   "dependencies": ["base"],
-  "factorio_version": "1.0"
+  "factorio_version": "1.1"
 }
